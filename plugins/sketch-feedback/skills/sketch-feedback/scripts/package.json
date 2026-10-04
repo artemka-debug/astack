@@ -1,0 +1,11 @@
+{
+  "name": "sketch-feedback",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}

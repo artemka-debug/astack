@@ -1,0 +1,16 @@
+{
+  "name": "astack",
+  "owner": {
+    "name": "adovhopolyi"
+  },
+  "metadata": {
+    "description": "Agent skills for working with Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "sketch-feedback",
+      "source": "./plugins/sketch-feedback",
+      "description": "Draw on your running web app (mouse, iPad + Apple Pencil) and let Claude make the change"
+    }
+  ]
+}

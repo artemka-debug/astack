@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Entry point for the sketch-feedback skill: installs Playwright on first use, then runs the CLI.
+set -euo pipefail
+SCRIPTS="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+if [[ ! -d "$SCRIPTS/node_modules/playwright" ]]; then
+  npm install --prefix "$SCRIPTS" --silent --no-audit --no-fund >&2
+  (cd "$SCRIPTS" && npx --no-install playwright install chromium >&2)
+fi
+exec node "$SCRIPTS/cli.mjs" "$@"

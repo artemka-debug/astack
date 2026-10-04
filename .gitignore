@@ -1,0 +1,4 @@
+node_modules/
+.sketch/
+demo/out/
+.DS_Store
