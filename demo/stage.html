@@ -1,0 +1,285 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>sketch-feedback demo</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#09090b}
+body{font-family:-apple-system,system-ui,sans-serif}
+#bg{position:fixed;inset:0;background:radial-gradient(1200px 700px at 15% 10%,#3b1d14 0,transparent 60%),radial-gradient(900px 700px at 90% 90%,#1a2e05 0,transparent 55%),#09090b}
+#stage{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;transition:transform .9s cubic-bezier(.65,0,.35,1)}
+.win{position:absolute;top:28px;height:1024px;border-radius:14px;overflow:hidden;box-shadow:0 30px 80px rgb(0 0 0/.55),0 0 0 1px rgb(255 255 255/.06)}
+#tui{left:28px;width:760px;background:#141413;color:#e7e5e4;display:flex;flex-direction:column;font:14.5px/1.5 'SF Mono',Menlo,monospace}
+#browser{left:812px;width:1080px;background:#fff;display:flex;flex-direction:column}
+.chrome{height:44px;flex:none;display:flex;align-items:center;gap:8px;padding:0 14px;background:#1c1c1e;color:#a1a1aa;font:12.5px -apple-system,system-ui}
+.chrome i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.chrome .title{margin-left:10px}
+.url{margin-left:auto;margin-right:auto;width:440px;height:28px;border-radius:8px;background:#2c2c2e;color:#e4e4e7;display:flex;align-items:center;gap:8px;padding:0 12px;font:13px -apple-system,system-ui}
+.url .lock{opacity:.6}
+#app{flex:1;border:0;width:100%;background:#f6f7f9}
+.blank{position:absolute;left:0;right:0;top:44px;bottom:0;display:grid;place-items:center;color:#a1a1aa;background:#f6f7f9;font-size:15px;transition:opacity .5s}
+/* TUI */
+#log{flex:1;overflow:hidden;padding:18px 22px 6px;display:flex;flex-direction:column;justify-content:flex-start}
+#log>*{animation:in .28s ease both;margin-bottom:10px}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.welcome{border:1px solid #d97757;border-radius:8px;padding:10px 14px;color:#a8a29e}
+.welcome b{color:#e7e5e4}.welcome .o{color:#d97757}
+.user{color:#a8a29e}.user b{color:#e7e5e4;font-weight:400}
+.msg{display:flex;gap:10px}.msg .d{flex:none}.msg .t{flex:1;min-width:0}
+.d.w{color:#e7e5e4}.d.g{color:#4ade80}.d.y{color:#facc15}
+.tool b{font-weight:700}.tool .a{color:#a8a29e}
+.out{color:#a8a29e;padding-left:22px;white-space:pre-wrap;word-break:break-word}
+.out .k{color:#78716c}.out .hl{color:#93c5fd}
+.out img{display:block;width:330px;margin:6px 0 2px 24px;border-radius:6px;border:1px solid #44403c}
+.diff{padding-left:46px;font-size:13px}
+.diff div{white-space:pre;padding:0 8px;border-radius:2px}
+.diff .add{background:#14532d66;color:#bbf7d0}.diff .del{background:#7f1d1d66;color:#fecaca}.diff .ctx{color:#78716c}
+#spin{height:28px;padding:0 22px;color:#d97757;flex:none;opacity:0;transition:opacity .2s}
+#spin.on{opacity:1}#spin .h{color:#78716c}
+#input{flex:none;margin:6px 16px 4px;border:1px solid #57534e;border-radius:8px;padding:9px 12px;min-height:44px;color:#e7e5e4}
+#input::before{content:'> ';color:#a8a29e}
+#input .c{display:inline-block;width:8px;height:17px;background:#e7e5e4;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hint{flex:none;padding:0 20px 12px;color:#57534e;font-size:12.5px}
+/* overlays */
+#cap{position:fixed;left:50%;top:14px;transform:translate(-50%,-20px);opacity:0;z-index:20;background:rgb(10 10 10/.9);
+	color:#fafafa;font:600 21px -apple-system,system-ui;padding:14px 26px;border-radius:999px;box-shadow:0 14px 40px rgb(0 0 0/.4);
+	transition:all .35s cubic-bezier(.2,.8,.2,1);white-space:nowrap;border:1px solid rgb(255 255 255/.08)}
+#cap.show{opacity:1;transform:translate(-50%,0)}
+#cap b{color:#d9f99d;margin-right:12px}
+#cursor{position:fixed;left:-50px;top:-50px;z-index:30;pointer-events:none;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;
+	background:rgb(17 17 17/.15);border:2px solid #111;box-shadow:0 0 0 2px rgb(255 255 255/.7);transition:transform .12s,background .12s}
+#cursor.down{transform:scale(.65);background:rgb(239 68 68/.55)}
+.card{position:fixed;inset:0;z-index:40;display:grid;place-items:center;text-align:center;color:#fafafa;
+	background:radial-gradient(circle at 30% 20%,#292524,#09090b 70%);transition:opacity .6s ease,transform .6s ease}
+.card.out{opacity:0;transform:scale(1.06)}
+.card h1{font-size:84px;margin:0 0 16px;letter-spacing:-.03em}.card h1 span{color:#d9f99d}
+.card p{font-size:28px;color:#a1a1aa;margin:0}
+.card code{display:inline-block;margin-top:40px;font:21px 'SF Mono',Menlo,monospace;background:#18181b;border:1px solid #27272a;padding:14px 22px;border-radius:12px;color:#d9f99d}
+.card .tags{margin-top:28px;display:flex;gap:12px;justify-content:center}
+.card .tags span{font-size:17px;color:#e4e4e7;border:1px solid #3f3f46;border-radius:999px;padding:7px 16px;animation:in .5s ease both}
+.card .tags span:nth-child(2){animation-delay:.15s}.card .tags span:nth-child(3){animation-delay:.3s}
+.card h1,.card p,.card code{animation:in .6s ease both}.card p{animation-delay:.12s}.card code{animation-delay:.25s}
+.ring{position:fixed;z-index:25;pointer-events:none;border:4px solid #d9f99d;border-radius:14px;box-shadow:0 0 0 9999px rgb(0 0 0/.0);
+	animation:ring 1.6s ease both}
+@keyframes ring{0%{opacity:0;transform:scale(1.15)}20%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+
+/* iPad layout */
+body.ipad #tui{width:612px}
+body.ipad #browser{display:none}
+#ipad{display:none;position:absolute;left:664px;top:118px;width:1220px;padding:20px;border-radius:44px;background:#0b0b0c;
+	box-shadow:0 40px 90px rgb(0 0 0/.6),0 0 0 2px #2a2a2c,inset 0 0 0 1px #3a3a3c}
+body.ipad #ipad{display:block}
+#ipad .screen{position:relative;border-radius:24px;overflow:hidden;background:#f4f4f5}
+#ipad .sbar{height:44px;display:flex;align-items:center;justify-content:center;background:#f6f6f8;border-bottom:1px solid #e4e4e7;
+	font:13px -apple-system,system-ui;color:#18181b}
+#ipad .sbar .time{position:absolute;left:22px;font-weight:600}
+#ipad .sbar .icons{position:absolute;right:22px;color:#3f3f46;letter-spacing:2px}
+#ipad .sbar .u{min-width:380px;height:30px;border-radius:10px;background:#e9e9ee;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 14px}
+#ipad iframe{display:block;width:1180px;height:760px;border:0;background:#f4f4f5}
+#ipad .blank{top:44px}
+#pencil{position:fixed;left:-400px;top:-400px;z-index:31;pointer-events:none;width:0;height:0;display:none}
+body.ipad.pen #pencil{display:block}
+#pencil svg{position:absolute;left:0;top:0;transform-origin:0 0;transform:rotate(-58deg) translate(6px,-9px);filter:drop-shadow(10px 14px 10px rgb(0 0 0/.28));transition:transform .12s}
+#pencil.down svg{transform:rotate(-58deg) translate(0,-9px)}
+body.ipad #cursor{display:none}
+#finger{position:fixed;left:-200px;top:-200px;z-index:31;pointer-events:none;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;
+	background:rgb(120 120 128/.28);border:2px solid rgb(255 255 255/.75);box-shadow:0 4px 14px rgb(0 0 0/.25);display:none;transition:transform .12s}
+body.ipad.touch #finger{display:block}
+#finger.down{transform:scale(.8);background:rgb(120 120 128/.45)}
+.ink{position:fixed;z-index:29;pointer-events:none;font:30px 'Bradley Hand','Noteworthy','Segoe Print',cursive;color:#f4f4f5;white-space:nowrap;
+	clip-path:inset(0 100% 0 0);transition:opacity .4s}
+/* tailnet scene */
+#net{position:fixed;inset:0;z-index:35;display:grid;place-items:center;background:rgb(9 9 11/.82);opacity:0;transition:opacity .5s;pointer-events:none}
+#net.show{opacity:1}
+#net .panel{width:1100px;padding:44px 56px 40px;border-radius:28px;background:#141416;border:1px solid #27272a;color:#fafafa;text-align:center;
+	box-shadow:0 30px 80px rgb(0 0 0/.5)}
+#net h3{margin:0 0 6px;font:700 34px -apple-system,system-ui;letter-spacing:-.02em}
+#net h3 span{color:#d9f99d}
+#net p{margin:0 0 36px;color:#a1a1aa;font:20px -apple-system,system-ui}
+#net .row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+#net .node{width:280px;padding:22px;border-radius:20px;background:#1c1c1f;border:1px solid #2e2e33}
+#net .node .ico{font-size:58px;line-height:1}
+#net .node b{display:block;margin-top:10px;font:600 20px -apple-system,system-ui}
+#net .node code{display:block;margin-top:6px;color:#a1a1aa;font:15px 'SF Mono',Menlo,monospace}
+#net .node .ok{display:inline-block;margin-top:10px;font:600 13px -apple-system,system-ui;color:#4ade80}
+#net .wire{flex:1;position:relative;height:60px}
+#net .wire svg{width:100%;height:60px}
+#net .wire path{stroke:#d9f99d;stroke-width:3;fill:none;stroke-dasharray:10 10;animation:flow .8s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-20}}
+#net .wire span{position:absolute;left:0;right:0;top:-6px;color:#d4d4d8;font:600 15px -apple-system,system-ui}
+#net .wire em{position:absolute;left:0;right:0;bottom:-18px;color:#71717a;font:14px -apple-system,system-ui;font-style:normal}
+#net .url{margin-top:34px;display:inline-block;font:20px 'SF Mono',Menlo,monospace;color:#d9f99d;background:#0b0b0c;border:1px solid #27272a;padding:12px 20px;border-radius:12px}
+</style></head><body>
+<div id="bg"></div>
+<div id="stage">
+	<div class="win" id="tui">
+		<div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="title">claude — my-dashboard</span></div>
+		<div id="log"></div>
+		<div id="spin"></div>
+		<div id="input"><span id="typed"></span><span class="c"></span></div>
+		<div class="hint">? for shortcuts</div>
+	</div>
+	<div class="win" id="browser">
+		<div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>
+			<div class="url"><span class="lock">ⓘ</span><span id="url"></span></div></div>
+		<iframe id="app"></iframe>
+		<div class="blank" id="blank">Browser</div>
+	</div>
+	<div id="ipad"><div class="screen">
+		<div class="sbar"><span class="time">9:41</span><div class="u"><span>🔒</span><span id="iurl"></span></div><span class="icons">100% ▮</span></div>
+		<iframe id="iapp"></iframe>
+		<div class="blank" id="iblank">Safari</div>
+	</div></div>
+</div>
+<div id="pencil"><svg width="300" height="22" viewBox="0 0 300 22"><defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#f1f1f3"/><stop offset="1" stop-color="#c9c9cf"/></linearGradient></defs><path d="M0 11 L26 3 L26 19 Z" fill="#e8e8ea"/><path d="M0 11 L7 9 L7 13 Z" fill="#3f3f46"/><rect x="26" y="2" width="268" height="18" rx="2" fill="url(#pg)"/><rect x="286" y="2" width="12" height="18" rx="5" fill="#dcdce0"/><rect x="180" y="2" width="70" height="18" fill="#000" opacity=".04"/></svg></div>
+<div id="finger"></div>
+<div id="net"><div class="panel">
+	<h3>Both devices on <span>your tailnet</span></h3>
+	<p>Tailscale connects your iPad to your laptop directly, so you don't need port forwarding or the same Wi-Fi.</p>
+	<div class="row">
+		<div class="node"><div class="ico">💻</div><b>my-macbook</b><code>100.101.12.34</code><span class="ok">● Connected</span></div>
+		<div class="wire"><span>WireGuard tunnel</span><svg viewBox="0 0 300 60" preserveAspectRatio="none"><path d="M0 30 C 100 0, 200 60, 300 30"/></svg><em>dev server :3000 → proxy :8217</em></div>
+		<div class="node"><div class="ico">📱</div><b>my-ipad</b><code>100.88.7.65</code><span class="ok">● Connected</span></div>
+	</div>
+	<div class="url">http://my-macbook.tail1234.ts.net:8217</div>
+</div></div>
+<div id="cap"></div>
+<div id="cursor"></div>
+<script>
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const log = $('#log');
+const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+const scroll = () => { while (log.scrollHeight > log.clientHeight && log.children.length > 1) log.firstElementChild.remove(); };
+const add = html => { log.insertAdjacentHTML('beforeend', html); scroll(); return log.lastElementChild; };
+
+const ipad = () => document.body.classList.contains('ipad');
+addEventListener('message', e => {
+	const m = e.data;
+	if (!m || m.kind !== 'cursor') return;
+	const frame = ipad() ? $('#iapp') : $('#app');
+	const f = frame.getBoundingClientRect();
+	const k = f.width / frame.offsetWidth;
+	const c = ipad() ? (document.body.classList.contains('pen') ? $('#pencil') : $('#finger')) : $('#cursor');
+	c.style.left = `${f.left + m.x * k}px`;
+	c.style.top = `${f.top + m.y * k}px`;
+	if (m.down !== undefined) c.classList.toggle('down', m.down);
+});
+
+let spinTimer;
+window.demo = {
+	async typeInput(text) {
+		for (const ch of text) { $('#typed').textContent += ch; await sleep(22 + Math.random() * 30); }
+	},
+	submitInput() {
+		const t = $('#typed').textContent;
+		$('#typed').textContent = '';
+		add(`<div class="user">&gt; <b>${esc(t)}</b></div>`);
+	},
+	welcome() {
+		add(`<div class="welcome"><span class="o">✻</span> <b>Welcome to Claude Code!</b><br><br>&nbsp;&nbsp;cwd: ~/code/my-dashboard</div>`);
+	},
+	say: text => add(`<div class="msg"><span class="d w">⏺</span><span class="t">${text}</span></div>`),
+	tool: (name, arg, color = 'g') => add(`<div class="msg tool"><span class="d ${color}">⏺</span><span class="t"><b>${name}</b><span class="a">(${esc(arg)})</span></span></div>`),
+	async out(lines, gap = 70) {
+		const el = add(`<div class="out"></div>`);
+		for (const [i, l] of lines.entries()) {
+			el.insertAdjacentHTML('beforeend', `${i ? '\n' : ''}${i ? '   ' : '⎿  '}${l}`);
+			scroll();
+			await sleep(gap);
+		}
+	},
+	img(src) { add(`<div class="out">⎿  Read image (${Math.round(src.length * 0.75 / 1024)}KB)<img src="${src}"></div>`); },
+	async diff(file, rows) {
+		const adds = rows.filter(r => r[0] === '+').length;
+		const dels = rows.filter(r => r[0] === '-').length;
+		add(`<div class="out">⎿  Updated <b style="color:#e7e5e4">${file}</b> with ${adds} addition${adds === 1 ? '' : 's'}${dels ? ` and ${dels} removal${dels === 1 ? '' : 's'}` : ''}</div>`);
+		const el = add(`<div class="diff"></div>`);
+		for (const [kind, n, text] of rows) {
+			const cls = kind === '+' ? 'add' : kind === '-' ? 'del' : 'ctx';
+			el.insertAdjacentHTML('beforeend', `<div class="${cls}">${String(n).padStart(3)} ${kind === ' ' ? ' ' : kind} ${esc(text)}</div>`);
+			scroll();
+			await sleep(55);
+		}
+	},
+	spin(verb) {
+		clearInterval(spinTimer);
+		const s = $('#spin');
+		if (!verb) return s.classList.remove('on');
+		const glyphs = ['·', '✢', '✳', '✶', '✻', '✽', '✻', '✶', '✳', '✢'];
+		let i = 0, t0 = Date.now();
+		const tick = () => {
+			s.innerHTML = `${glyphs[i++ % glyphs.length]} ${verb} <span class="h">(${Math.floor((Date.now() - t0) / 1000)}s · esc to interrupt)</span>`;
+		};
+		tick();
+		spinTimer = setInterval(tick, 120);
+		s.classList.add('on');
+	},
+	async url(text, src) {
+		$('#url').textContent = '';
+		for (const ch of text) { $('#url').textContent += ch; await sleep(30); }
+		$('#app').src = src;
+	},
+	hideBlank() { const b = $(ipad() ? '#iblank' : '#blank'); b.style.opacity = 0; setTimeout(() => b.remove(), 600); },
+	layout(name) { document.body.classList.toggle('ipad', name === 'ipad'); },
+	pointer(kind) {
+		document.body.classList.toggle('pen', kind === 'pen');
+		document.body.classList.toggle('touch', kind === 'touch');
+		for (const id of ['#pencil', '#finger']) $(id).classList.remove('down');
+	},
+	async iurl(text, src) {
+		$('#iurl').textContent = '';
+		for (const ch of text) { $('#iurl').textContent += ch; await sleep(28); }
+		$('#iapp').src = src;
+	},
+	// Handwriting for the Scribble scene: each line is revealed left to right, one after another.
+	async ink(x, y, lines, ms, width) {
+		const els = lines.map((text, i) => {
+			const el = document.createElement('div');
+			el.className = 'ink';
+			el.textContent = text;
+			document.body.append(el);
+			for (let size = 30; size > 14 && el.offsetWidth > width; size--) el.style.fontSize = `${size}px`;
+			Object.assign(el.style, { left: `${x}px`, top: `${y + i * 34}px` });
+			return el;
+		});
+		for (const el of els) {
+			const d = ms / els.length;
+			el.animate([{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: d, fill: 'forwards', easing: 'linear' });
+			await sleep(d);
+		}
+		return true;
+	},
+	clearInk() { for (const el of document.querySelectorAll('.ink')) el.style.opacity = 0, setTimeout(() => el.remove(), 500); },
+	net(on) { $('#net').classList.toggle('show', on); },
+	caption(step, text) {
+		const c = $('#cap');
+		c.classList.remove('show');
+		if (!text) return;
+		setTimeout(() => { c.innerHTML = step ? `<b>${step}</b>${text}` : text; c.classList.add('show'); }, 200);
+	},
+	camera(x, y, s) {
+		const st = $('#stage');
+		if (!s || s === 1) return (st.style.transform = 'none');
+		const tx = Math.min(0, Math.max(1920 - 1920 * s, 960 - x * s));
+		const ty = Math.min(0, Math.max(1080 - 1080 * s, 540 - y * s));
+		st.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+	},
+	ring(x, y, w, h) {
+		const r = document.createElement('div');
+		r.className = 'ring';
+		Object.assign(r.style, { left: `${x - 8}px`, top: `${y - 8}px`, width: `${w + 16}px`, height: `${h + 16}px` });
+		$('#stage').append(r);
+		setTimeout(() => r.remove(), 1700);
+	},
+	card(html) {
+		const el = document.createElement('div');
+		el.className = 'card';
+		el.innerHTML = html;
+		document.body.append(el);
+	},
+	hideCards() {
+		for (const el of document.querySelectorAll('.card')) el.classList.add('out'), setTimeout(() => el.remove(), 700);
+	},
+};
+</script>
+</body></html>
