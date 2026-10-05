@@ -11,13 +11,13 @@ Draw on your running app, Claude makes the change.
 
 [![sketch-proxy on the desktop](docs/media/sketch-proxy-desktop.gif)](docs/media/sketch-proxy-desktop.mp4)
 
-▶ [Watch in 1080p (50s)](docs/media/sketch-proxy-desktop.mp4)
+▶ [Watch in 1080p (60s)](docs/media/sketch-proxy-desktop.mp4)
 
 **iPad + Apple Pencil, over Tailscale**
 
 [![sketch-proxy from an iPad](docs/media/sketch-proxy-ipad.gif)](docs/media/sketch-proxy-ipad.mp4)
 
-▶ [Watch in 1080p (60s)](docs/media/sketch-proxy-ipad.mp4)
+▶ [Watch in 1080p (75s)](docs/media/sketch-proxy-ipad.mp4)
 
 ## Skills
 
