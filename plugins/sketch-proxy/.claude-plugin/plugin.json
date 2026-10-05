@@ -1,5 +1,5 @@
 {
-  "name": "sketch-feedback",
+  "name": "sketch-proxy",
   "version": "0.1.0",
   "description": "Draw on your running web app (mouse, iPad + Apple Pencil) and let Claude make the change",
   "author": {

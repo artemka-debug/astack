@@ -8,8 +8,8 @@
   },
   "plugins": [
     {
-      "name": "sketch-feedback",
-      "source": "./plugins/sketch-feedback",
+      "name": "sketch-proxy",
+      "source": "./plugins/sketch-proxy",
       "description": "Draw on your running web app (mouse, iPad + Apple Pencil) and let Claude make the change"
     }
   ]

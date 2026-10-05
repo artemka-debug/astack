@@ -3,9 +3,27 @@
 Agent skills for [Claude Code](https://claude.com/claude-code) (and any agent that
 reads `SKILL.md` skills).
 
+## Demo
+
+Draw on your running app, Claude makes the change.
+
+**Desktop**
+
+[![sketch-proxy on the desktop](docs/media/sketch-proxy-desktop.gif)](docs/media/sketch-proxy-desktop.mp4)
+
+▶ [Watch in 1080p (50s)](docs/media/sketch-proxy-desktop.mp4)
+
+**iPad + Apple Pencil, over Tailscale**
+
+[![sketch-proxy from an iPad](docs/media/sketch-proxy-ipad.gif)](docs/media/sketch-proxy-ipad.mp4)
+
+▶ [Watch in 1080p (60s)](docs/media/sketch-proxy-ipad.mp4)
+
+## Skills
+
 | Skill | What it does |
 |-------|--------------|
-| [sketch-feedback](plugins/sketch-feedback/skills/sketch-feedback/SKILL.md) | Draw on your running web app (mouse, or iPad + Apple Pencil over Tailscale) and Claude makes the change |
+| [sketch-proxy](plugins/sketch-proxy/skills/sketch-proxy/SKILL.md) | Draw on your running web app (mouse, or iPad + Apple Pencil over Tailscale) and Claude makes the change |
 
 ## Install
 
@@ -13,38 +31,28 @@ In Claude Code:
 
 ```
 /plugin marketplace add artemka-debug/astack
-/plugin install sketch-feedback@astack
+/plugin install sketch-proxy@astack
 ```
 
 Or copy the skill folder into your skills directory:
 
 ```bash
 git clone https://github.com/artemka-debug/astack
-cp -r astack/plugins/sketch-feedback/skills/sketch-feedback ~/.claude/skills/
+cp -r astack/plugins/sketch-proxy/skills/sketch-proxy ~/.claude/skills/
 ```
 
 Needs Node.js 20.11+. The first run installs Playwright and Chromium for screenshots.
 
 ---
 
-## sketch-feedback
+## sketch-proxy
 
 Put a proxy in front of your dev server and every page gets a drawing layer. Circle
 things, cross them out, draw arrows, add a note, then press **Keep working**. Claude
 gets an annotated screenshot plus the DOM elements under each mark, makes the change,
 and reports back in a toast on the page. Hot reload does the rest.
 
-### On the desktop
-
-[![Sketch feedback on the desktop](docs/media/sketch-feedback-desktop.gif)](docs/media/sketch-feedback-desktop.mp4)
-
-▶ [Watch the full desktop demo in 1080p (50s)](docs/media/sketch-feedback-desktop.mp4)
-
 ### On an iPad with Apple Pencil, over Tailscale
-
-[![Sketch feedback from an iPad](docs/media/sketch-feedback-ipad.gif)](docs/media/sketch-feedback-ipad.mp4)
-
-▶ [Watch the full iPad demo in 1080p (60s)](docs/media/sketch-feedback-ipad.mp4)
 
 The app keeps running on your laptop and the iPad becomes the canvas:
 
@@ -85,7 +93,7 @@ iPad / browser ──▶ sketch proxy :8217 ──▶ your dev server :3000
   then what changed.
 
 Sketches are stored in `.sketch/` in your project. The folder ignores itself in git.
-See [SKILL.md](plugins/sketch-feedback/skills/sketch-feedback/SKILL.md) for all options.
+See [SKILL.md](plugins/sketch-proxy/skills/sketch-proxy/SKILL.md) for all options.
 
 ### Security
 
@@ -96,7 +104,7 @@ app while it runs. Use `--host tailscale` (tailnet only) or `--host 127.0.0.1`
 ## Demo videos
 
 The videos are recorded from a scripted stage with a fake dashboard, the real proxy
-and the real overlay. The GIFs above are 2x-speed previews of the MP4s. See
+and the real overlay. The GIFs at the top are 2x-speed previews of the MP4s. See
 [demo/](demo/README.md) to re-record them.
 
 ## License

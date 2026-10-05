@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const DIR = import.meta.dirname;
-const SCRIPTS = path.join(DIR, '..', 'plugins', 'sketch-feedback', 'skills', 'sketch-feedback', 'scripts');
+const SCRIPTS = path.join(DIR, '..', 'plugins', 'sketch-proxy', 'skills', 'sketch-proxy', 'scripts');
 const { chromium } = await import(path.join(SCRIPTS, 'node_modules', 'playwright', 'index.mjs'));
 
 export const OUT = path.join(DIR, 'out');

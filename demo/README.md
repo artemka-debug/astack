@@ -8,17 +8,17 @@ window or an iPad. Sketches go through the real overlay, inbox and
 `sketch wait` / `sketch done`, so the annotated screenshots in the videos are real.
 
 ```bash
-npm install --prefix plugins/sketch-feedback/skills/sketch-feedback/scripts
-npx --prefix plugins/sketch-feedback/skills/sketch-feedback/scripts playwright install chromium
-node demo/record-desktop.mjs   # docs/media/sketch-feedback-desktop.mp4
-node demo/record-ipad.mjs      # docs/media/sketch-feedback-ipad.mp4
+npm install --prefix plugins/sketch-proxy/skills/sketch-proxy/scripts
+npx --prefix plugins/sketch-proxy/skills/sketch-proxy/scripts playwright install chromium
+node demo/record-desktop.mjs   # docs/media/sketch-proxy-desktop.mp4
+node demo/record-ipad.mjs      # docs/media/sketch-proxy-ipad.mp4
 ```
 
 Then regenerate the README previews (2x speed, 800px wide):
 
 ```bash
 for f in desktop ipad; do
-  ffmpeg -y -i docs/media/sketch-feedback-$f.mp4 -vf "setpts=PTS/2,fps=10,scale=800:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" docs/media/sketch-feedback-$f.gif
+  ffmpeg -y -i docs/media/sketch-proxy-$f.mp4 -vf "setpts=PTS/2,fps=10,scale=800:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" docs/media/sketch-proxy-$f.gif
 done
 ```
 

@@ -1,5 +1,5 @@
 ---
-name: sketch-feedback
+name: sketch-proxy
 description: >-
   Iterate on a local web app by drawing on it: proxy the dev server, open it in a
   browser, on an iPad or phone (same Wi-Fi or over Tailscale), mark up the page with
@@ -10,7 +10,7 @@ description: >-
   iterating from their marks.
 ---
 
-# Sketch feedback
+# Sketch proxy
 
 `scripts/sketch serve` puts a proxy in front of any local dev server and adds a
 drawing overlay to every HTML page. Each sketch lands in an inbox; `sketch wait`

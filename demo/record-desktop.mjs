@@ -1,15 +1,15 @@
 // Desktop walkthrough: Claude Code on the left, the proxied app in a browser on the right.
-//   node demo/record-desktop.mjs   →  docs/media/sketch-feedback-desktop.mp4
+//   node demo/record-desktop.mjs   →  docs/media/sketch-proxy-desktop.mp4
 import { PROXY, arrow, ellipse, sketch, sleep, start, state, summarize } from './lib.mjs';
 
-const { page, demo, stroke, click, box, ring, waitPending, annotated, finish } = await start('sketch-feedback-desktop');
+const { page, demo, stroke, click, box, ring, waitPending, annotated, finish } = await start('sketch-proxy-desktop');
 const app = page.frameLocator('#app');
 const overlay = s => app.locator(`sketch-overlay ${s}`);
 
 // Intro
 await demo(
 	'card',
-	`<div><h1>✏️ Sketch <span>feedback</span></h1><p>Draw on your running app. Claude makes the change.</p>
+	`<div><h1>✏️ Sketch <span>proxy</span></h1><p>Draw on your running app. Claude makes the change.</p>
 	<div class="tags"><span>Mouse</span><span>Apple Pencil</span><span>Any local dev server</span></div></div>`
 );
 await demo('welcome');
@@ -25,7 +25,7 @@ await demo('submitInput');
 await demo('spin', 'Pondering…');
 await sleep(900);
 await demo('spin');
-await demo('tool', 'Skill', 'sketch-feedback');
+await demo('tool', 'Skill', 'sketch-proxy');
 await demo('out', ['Successfully loaded skill']);
 await sleep(200);
 await demo('tool', 'Bash', 'sketch serve --target http://localhost:3000');

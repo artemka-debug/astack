@@ -1,8 +1,8 @@
 // iPad walkthrough: Claude Code on the laptop, the app on an iPad over Tailscale, Apple Pencil marks.
-//   node demo/record-ipad.mjs   →  docs/media/sketch-feedback-ipad.mp4
+//   node demo/record-ipad.mjs   →  docs/media/sketch-proxy-ipad.mp4
 import { PROXY, arrow, ellipse, sketch, sleep, start, state, summarize } from './lib.mjs';
 
-const { page, demo, stroke, click, box, ring, waitPending, annotated, finish } = await start('sketch-feedback-ipad');
+const { page, demo, stroke, click, box, ring, waitPending, annotated, finish } = await start('sketch-proxy-ipad');
 await demo('layout', 'ipad');
 const app = page.frameLocator('#iapp');
 const overlay = s => app.locator(`sketch-overlay ${s}`);
@@ -41,7 +41,7 @@ await demo('submitInput');
 await demo('spin', 'Pondering…');
 await sleep(900);
 await demo('spin');
-await demo('tool', 'Skill', 'sketch-feedback');
+await demo('tool', 'Skill', 'sketch-proxy');
 await demo('out', ['Successfully loaded skill']);
 await sleep(200);
 await demo('tool', 'Bash', 'sketch serve --target http://localhost:3000 --host tailscale');
