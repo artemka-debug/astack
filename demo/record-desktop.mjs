@@ -161,7 +161,7 @@ await sleep(900);
 await demo(
 	'card',
 	`<div><h1>Sketch, send, <span>ship</span>.</h1><p>Any local dev server. Any device on your network or tailnet.</p>
-	<code>/plugin marketplace add adovhopolyi/astack</code></div>`
+	<code>/plugin marketplace add artemka-debug/astack</code></div>`
 );
 await sleep(3800);
 await finish();

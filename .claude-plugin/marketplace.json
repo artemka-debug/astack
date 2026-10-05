@@ -1,7 +1,7 @@
 {
   "name": "astack",
   "owner": {
-    "name": "adovhopolyi"
+    "name": "artemka-debug"
   },
   "metadata": {
     "description": "Agent skills for working with Claude Code"

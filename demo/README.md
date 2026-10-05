@@ -14,4 +14,12 @@ node demo/record-desktop.mjs   # docs/media/sketch-feedback-desktop.mp4
 node demo/record-ipad.mjs      # docs/media/sketch-feedback-ipad.mp4
 ```
 
+Then regenerate the README previews (2x speed, 800px wide):
+
+```bash
+for f in desktop ipad; do
+  ffmpeg -y -i docs/media/sketch-feedback-$f.mp4 -vf "setpts=PTS/2,fps=10,scale=800:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" docs/media/sketch-feedback-$f.gif
+done
+```
+
 Needs `ffmpeg` on the PATH. Ports 3917 (app) and 8317 (proxy) must be free.

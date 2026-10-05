@@ -12,14 +12,14 @@ reads `SKILL.md` skills).
 In Claude Code:
 
 ```
-/plugin marketplace add adovhopolyi/astack
+/plugin marketplace add artemka-debug/astack
 /plugin install sketch-feedback@astack
 ```
 
 Or copy the skill folder into your skills directory:
 
 ```bash
-git clone https://github.com/adovhopolyi/astack
+git clone https://github.com/artemka-debug/astack
 cp -r astack/plugins/sketch-feedback/skills/sketch-feedback ~/.claude/skills/
 ```
 
@@ -36,15 +36,15 @@ and reports back in a toast on the page. Hot reload does the rest.
 
 ### On the desktop
 
-[![Sketch feedback on the desktop](docs/media/sketch-feedback-desktop.jpg)](docs/media/sketch-feedback-desktop.mp4)
+[![Sketch feedback on the desktop](docs/media/sketch-feedback-desktop.gif)](docs/media/sketch-feedback-desktop.mp4)
 
-▶ [Watch the desktop demo (50s)](docs/media/sketch-feedback-desktop.mp4)
+▶ [Watch the full desktop demo in 1080p (50s)](docs/media/sketch-feedback-desktop.mp4)
 
 ### On an iPad with Apple Pencil, over Tailscale
 
-[![Sketch feedback from an iPad](docs/media/sketch-feedback-ipad.jpg)](docs/media/sketch-feedback-ipad.mp4)
+[![Sketch feedback from an iPad](docs/media/sketch-feedback-ipad.gif)](docs/media/sketch-feedback-ipad.mp4)
 
-▶ [Watch the iPad demo (60s)](docs/media/sketch-feedback-ipad.mp4)
+▶ [Watch the full iPad demo in 1080p (60s)](docs/media/sketch-feedback-ipad.mp4)
 
 The app keeps running on your laptop and the iPad becomes the canvas:
 
@@ -96,7 +96,8 @@ app while it runs. Use `--host tailscale` (tailnet only) or `--host 127.0.0.1`
 ## Demo videos
 
 The videos are recorded from a scripted stage with a fake dashboard, the real proxy
-and the real overlay. See [demo/](demo/README.md) to re-record them.
+and the real overlay. The GIFs above are 2x-speed previews of the MP4s. See
+[demo/](demo/README.md) to re-record them.
 
 ## License
 
