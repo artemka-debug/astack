@@ -1,7 +1,7 @@
 # astack
 
-Agent skills for [Claude Code](https://claude.com/claude-code) (and any agent that
-reads `SKILL.md` skills).
+Agent skills for [Claude Code](https://claude.com/claude-code), [Codex](https://developers.openai.com/codex)
+and any agent that reads `SKILL.md` skills.
 
 ## Demo
 
@@ -34,11 +34,18 @@ In Claude Code:
 /plugin install sketch-proxy@astack
 ```
 
+In Codex:
+
+```bash
+codex plugin marketplace add artemka-debug/astack
+codex plugin add sketch-proxy@astack
+```
+
 Or copy the skill folder into your skills directory:
 
 ```bash
 git clone https://github.com/artemka-debug/astack
-cp -r astack/plugins/sketch-proxy/skills/sketch-proxy ~/.claude/skills/
+cp -r astack/plugins/sketch-proxy/skills/sketch-proxy ~/.claude/skills/   # or ~/.codex/skills/
 ```
 
 Needs Node.js 20.11+. The first run installs Playwright and Chromium for screenshots.

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "sketch-proxy",
+  "version": "0.1.0",
+  "description": "Draw on your running web app (mouse, iPad + Apple Pencil) and let the agent make the change",
+  "author": {
+    "name": "artemka-debug",
+    "url": "https://github.com/artemka-debug"
+  },
+  "homepage": "https://github.com/artemka-debug/astack",
+  "repository": "https://github.com/artemka-debug/astack",
+  "license": "MIT",
+  "keywords": ["sketch", "ipad", "apple-pencil", "tailscale", "ui", "feedback"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Sketch proxy",
+        "shortDescription": "Draw on your running app, the agent makes the change",
+        "longDescription": "Proxies your local dev server and adds a drawing layer to every page. Circle, cross out, draw arrows and add a note from a browser or an iPad with Apple Pencil; Codex gets an annotated screenshot plus the DOM elements under each mark, makes the change and reports back on the page.",
+        "developerName": "artemka-debug",
+        "category": "Coding",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://github.com/artemka-debug/astack",
+        "defaultPrompt": [
+          "Start a sketch session on my dev server, I'll draw on it.",
+          "Open the app on my iPad over Tailscale, I'll sketch."
+        ]
+      }
+    }
+  }
+}
